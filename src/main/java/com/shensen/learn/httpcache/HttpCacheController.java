@@ -169,8 +169,6 @@ public class HttpCacheController {
             .build();
 
     private long getLastModified() throws ExecutionException {
-        return lastModifiedCache.get("lastModifiedSince", () -> {
-            return System.currentTimeMillis();
-        });
+        return lastModifiedCache.get("lastModifiedSince", () -> System.currentTimeMillis());
     }
 }
