@@ -41,7 +41,7 @@ public class RedisCommandDemo {
         lotteryB.setAwardCount(5);
         lotteryB.setCommodityCode("000000018360153062");
         lotteryB.setWinningCount(1);
-        hmset(jedis, "Lottery:12323:2", lotteryA, 60 * 60);
+        hmset(jedis, "Lottery:12323:2", lotteryB, 60 * 60);
 
         LotteryAwards lotteryC = new LotteryAwards();
         lotteryC.setAwardsId(3L);
@@ -49,7 +49,7 @@ public class RedisCommandDemo {
         lotteryC.setAwardCount(14);
         lotteryC.setCommodityCode("000000019360153063");
         lotteryC.setWinningCount(4);
-        hmset(jedis, "Lottery:12323:3", lotteryA, 60 * 60);
+        hmset(jedis, "Lottery:12323:3", lotteryC, 60 * 60);
         System.out.println(Arrays.asList(lotteryA, lotteryB, lotteryC));
         jedis.close();
     }

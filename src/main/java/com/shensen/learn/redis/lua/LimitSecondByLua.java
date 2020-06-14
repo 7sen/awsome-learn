@@ -36,9 +36,8 @@ public class LimitSecondByLua {
         limitLua.append("   return 0\n");
         limitLua.append("else\n");
         limitLua.append("   redis.call('incrby', key, '1')\n");
-        limitLua.append("   redis.call('expire', key, seconds)\n");
-        limitLua.append("   return 1\n");
         limitLua.append("end\n");
+        limitLua.append("return redis.call('expire', key, seconds)\n");
         LIMIT_LUA = limitLua.toString();
         System.out.println("限流LUA脚本:\n" + LIMIT_LUA);
     }
