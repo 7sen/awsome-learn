@@ -2,13 +2,18 @@ package com.shensen.learn.redis;
 
 import static com.shensen.learn.redis.JedisManager.getJedis;
 
+import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSON;
 import com.shensen.learn.dto.LotteryAwards;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Response;
 
 /**
  * Hash批量读取使用Pipeline.
@@ -24,11 +29,18 @@ public class HashListByPipeline {
         List<String> keys = Arrays.asList("Lottery:12323:1", "Lottery:12323:2", "Lottery:12323:3");
         List<LotteryAwards> lotteryAwardsList = new ArrayList<>();
         Pipeline pipeline = jedis.pipelined();
+        Map<String, Response<Map<String, String>>> responseMap = new HashMap<>(keys.size());
         for (String key : keys) {
-            LotteryAwards lotteryAwardsA = JSON.parseObject(JSON.toJSONString(jedis.hgetAll(key)), LotteryAwards.class);
-            lotteryAwardsList.add(lotteryAwardsA);
+            responseMap.put(key, pipeline.hgetAll(key));
         }
         pipeline.sync();
+
+        for (Iterator<Response<Map<String, String>>> iterator = responseMap.values().iterator(); iterator.hasNext(); ) {
+            Map<String, String> next = iterator.next().get();
+            if (MapUtil.isNotEmpty(next)) {
+                lotteryAwardsList.add(JSON.parseObject(JSON.toJSONString(next), LotteryAwards.class));
+            }
+        }
         System.out.println(lotteryAwardsList);
         jedis.close();
     }
