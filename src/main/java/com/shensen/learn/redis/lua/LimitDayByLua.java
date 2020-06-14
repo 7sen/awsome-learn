@@ -30,12 +30,12 @@ public class LimitDayByLua {
         StringBuilder limitLua = new StringBuilder();
         limitLua.append("local key = KEYS[1]\n");
         limitLua.append("local limitTime = tonumber(ARGV[1])\n");
-        limitLua.append("local currentTime = tonumber(redis.call('incrby', key, '1'))\n");
-        limitLua.append("if currentTime == 1 then\n");
-        limitLua.append("   return redis.call('pexpireAt', key, tonumber(ARGV[2]))\n");
-        limitLua.append("elseif currentTime > limitTime then\n");
+        limitLua.append("local currentTime = tonumber(redis.call('get', key) or '0')\n");
+        limitLua.append("if currentTime + 1 > limitTime then\n");
         limitLua.append("   return 0\n");
         limitLua.append("else\n");
+        limitLua.append("   redis.call('incrby', key, '1')\n");
+        limitLua.append("   redis.call('pexpireAt', key, tonumber(ARGV[2]))\n");
         limitLua.append("   return 1\n");
         limitLua.append("end\n");
         LIMIT_LUA = limitLua.toString();
