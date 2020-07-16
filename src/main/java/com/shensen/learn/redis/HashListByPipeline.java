@@ -4,6 +4,8 @@ import static com.shensen.learn.redis.JedisManager.getJedis;
 
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.shensen.learn.dto.LotteryAwards;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,11 +36,17 @@ public class HashListByPipeline {
             responseMap.put(key, pipeline.hgetAll(key));
         }
         pipeline.sync();
-
+        LotteryAwards awards = new LotteryAwards();
+        awards.setAwardsList(Arrays.asList(5L, 3L, 14L));
+        Map<String, String> hash = JSON
+                .parseObject(JSON.toJSONString(awards), new TypeReference<Map<String, String>>() {
+                });
+        pipeline.hmset("Lottery:12323:2", hash);
+        pipeline.sync();
         for (Iterator<Response<Map<String, String>>> iterator = responseMap.values().iterator(); iterator.hasNext(); ) {
             Map<String, String> next = iterator.next().get();
             if (MapUtil.isNotEmpty(next)) {
-                lotteryAwardsList.add(JSON.parseObject(JSON.toJSONString(next), LotteryAwards.class));
+                lotteryAwardsList.add(JSONObject.parseObject(JSON.toJSONString(next), LotteryAwards.class));
             }
         }
         System.out.println(lotteryAwardsList);

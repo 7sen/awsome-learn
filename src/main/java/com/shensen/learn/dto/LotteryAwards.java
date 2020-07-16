@@ -1,6 +1,9 @@
 package com.shensen.learn.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.shensen.learn.fastjson.deserializer.SubjectListDeserializer;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 抽奖奖项
@@ -16,6 +19,8 @@ public class LotteryAwards implements Serializable {
     private Integer awardsStatus;
     private Integer awardCount;
     private Integer winningCount;
+    @JSONField(deserializeUsing = SubjectListDeserializer.class)
+    private List<Long> awardsList;
 
     public Long getAwardsId() {
         return awardsId;
@@ -57,6 +62,14 @@ public class LotteryAwards implements Serializable {
         this.winningCount = winningCount;
     }
 
+    public List<Long> getAwardsList() {
+        return awardsList;
+    }
+
+    public void setAwardsList(List<Long> awardsList) {
+        this.awardsList = awardsList;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("LotteryAwards{");
@@ -65,6 +78,7 @@ public class LotteryAwards implements Serializable {
         sb.append(", awardsStatus=").append(awardsStatus);
         sb.append(", awardCount=").append(awardCount);
         sb.append(", winningCount=").append(winningCount);
+        sb.append(", awardsList=").append(awardsList);
         sb.append('}');
         return sb.toString();
     }

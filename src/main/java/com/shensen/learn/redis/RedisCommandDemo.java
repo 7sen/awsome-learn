@@ -3,6 +3,7 @@ package com.shensen.learn.redis;
 import static com.shensen.learn.redis.JedisManager.getJedis;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
 import com.shensen.learn.dto.LotteryActivity;
 import com.shensen.learn.dto.LotteryAwards;
@@ -23,6 +24,22 @@ public class RedisCommandDemo {
 
     public static void main(String[] args) {
         Jedis jedis = getJedis();
+
+        LotteryAwards lotteryA = new LotteryAwards();
+        lotteryA.setAwardsId(1L);
+        lotteryA.setAwardsStatus(1);
+        lotteryA.setAwardCount(20);
+        lotteryA.setCommodityCode("000000013360153061");
+        lotteryA.setWinningCount(5);
+        lotteryA.setAwardsList(Arrays.asList(1L, 2L, 3L));
+
+        hmset(jedis, "Lottery:12323:1", lotteryA, 60 * 60);
+        System.out.println(jedis.hgetAll("Lottery:12323:1"));
+        System.out.println(JSONArray.parseArray(jedis.hget("Lottery:12323:2", "awardsList"), Long.class));
+        jedis.close();
+    }
+
+    private static void initLotteryActivity(Jedis jedis) {
         LotteryActivity activity = new LotteryActivity();
         activity.setLotteryAwardsList(Arrays.asList(1L, 2L, 3L));
         hmset(jedis, key, activity, 60 * 60);
@@ -33,6 +50,8 @@ public class RedisCommandDemo {
         lotteryA.setAwardCount(20);
         lotteryA.setCommodityCode("000000013360153061");
         lotteryA.setWinningCount(5);
+        lotteryA.setAwardsList(Arrays.asList(1L, 2L, 3L));
+
         hmset(jedis, "Lottery:12323:1", lotteryA, 60 * 60);
 
         LotteryAwards lotteryB = new LotteryAwards();
@@ -51,7 +70,6 @@ public class RedisCommandDemo {
         lotteryC.setWinningCount(4);
         hmset(jedis, "Lottery:12323:3", lotteryC, 60 * 60);
         System.out.println(Arrays.asList(lotteryA, lotteryB, lotteryC));
-        jedis.close();
     }
 
     private static <T> void hmset(Jedis jedis, final String key, T object, final int seconds) {
