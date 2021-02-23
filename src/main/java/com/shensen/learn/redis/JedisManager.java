@@ -19,7 +19,7 @@ public class JedisManager {
         config.setMaxTotal(20);
         config.setMaxIdle(5);
         config.setMinIdle(0);
-        jedisPool = new JedisPool(config, "10.243.136.182", 6379);
+        jedisPool = new JedisPool(config, "*", 6379);
     }
 
     public static Jedis getJedis() {
