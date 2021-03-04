@@ -88,6 +88,11 @@
             <artifactId>hutool-all</artifactId>
             <version>5.5.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>1.5.18</version>
+        </dependency>
     </dependencies>
 
     <build>
